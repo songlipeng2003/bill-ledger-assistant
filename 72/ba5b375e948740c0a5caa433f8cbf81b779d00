@@ -1,0 +1,19 @@
+docs/skills-design.md
+  s_87e629df9ef325::t_6fdec219308acd 1-268
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "72ba5b375e948740c0a5caa433f8cbf81b779d00",
+  "prompts": {},
+  "sessions": {
+    "s_87e629df9ef325": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a163ad-a7c4-7b81-ab79-04caa7c41d79",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Peter Song <123wuming_123@163.com>"
+    }
+  }
+}
