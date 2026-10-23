@@ -1,0 +1,4 @@
+interface:
+  display_name: "已核对银行邮件清理"
+  short_description: "按有效对账清单及执行前确认清理整组邮件，只移入垃圾箱并验证结果"
+  default_prompt: "使用 $verified-bank-mail-cleanup 复核我指定的候选清单，确认后仅移入垃圾箱。"

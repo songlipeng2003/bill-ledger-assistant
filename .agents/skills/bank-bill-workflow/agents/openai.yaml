@@ -1,0 +1,4 @@
+interface:
+  display_name: "银行账单处理总流程"
+  short_description: "按用户范围串联提取对账补录和清理，分别管理证据状态与实际操作授权"
+  default_prompt: "使用 $bank-bill-workflow 处理指定银行账单，先对账，再按我的授权补账和清理。"

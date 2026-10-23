@@ -1,0 +1,4 @@
+interface:
+  display_name: "随手记补录与核验"
+  short_description: "查重后补录已授权的消费退款等流水，并重新读取验证实际入账结果"
+  default_prompt: "使用 $sui-ledger-entry 将我确认的缺失消费和退款录入随手记并逐笔复核。"

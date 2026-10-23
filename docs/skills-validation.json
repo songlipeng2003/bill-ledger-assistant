@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-23",
+  "skills": [
+    "bank-mail-extract",
+    "bank-ledger-reconcile",
+    "sui-ledger-entry",
+    "verified-bank-mail-cleanup",
+    "bank-bill-workflow"
+  ],
+  "placement": "project/.agents/skills",
+  "structure_validation_passed": 5,
+  "synthetic_tests_passed": 65,
+  "live_browser_tested": false,
+  "live_financial_writes": false,
+  "live_email_deletions": false,
+  "global_skill_installation": false,
+  "helper_scripts_network_or_browser_calls": false,
+  "files": [
+    ".agents/skills/bank-mail-extract/SKILL.md",
+    ".agents/skills/bank-mail-extract/references/transaction-format.md",
+    ".agents/skills/bank-mail-extract/references/bank-formats.md",
+    ".agents/skills/bank-mail-extract/agents/openai.yaml",
+    ".agents/skills/bank-ledger-reconcile/SKILL.md",
+    ".agents/skills/bank-ledger-reconcile/references/input-contract.md",
+    ".agents/skills/bank-ledger-reconcile/references/browser-readback.md",
+    ".agents/skills/bank-ledger-reconcile/agents/openai.yaml",
+    ".agents/skills/bank-ledger-reconcile/scripts/reconcile.py",
+    ".agents/skills/sui-ledger-entry/SKILL.md",
+    ".agents/skills/sui-ledger-entry/references/journal-contract.md",
+    ".agents/skills/sui-ledger-entry/references/sui-workflow.md",
+    ".agents/skills/sui-ledger-entry/agents/openai.yaml",
+    ".agents/skills/sui-ledger-entry/scripts/entry_journal.py",
+    ".agents/skills/verified-bank-mail-cleanup/SKILL.md",
+    ".agents/skills/verified-bank-mail-cleanup/references/cleanup-contract.md",
+    ".agents/skills/verified-bank-mail-cleanup/agents/openai.yaml",
+    ".agents/skills/verified-bank-mail-cleanup/scripts/prepare_cleanup.py",
+    ".agents/skills/bank-bill-workflow/SKILL.md",
+    ".agents/skills/bank-bill-workflow/references/project-policy.md",
+    ".agents/skills/bank-bill-workflow/agents/openai.yaml"
+  ]
+}

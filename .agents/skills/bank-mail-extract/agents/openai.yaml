@@ -1,0 +1,4 @@
+interface:
+  display_name: "银行邮件交易提取"
+  short_description: "读取银行日报和月账单，保留来源并区分消费退款还款及重复通知"
+  default_prompt: "使用 $bank-mail-extract 提取指定银行邮件的完整交易明细，暂不记账或清理邮件。"

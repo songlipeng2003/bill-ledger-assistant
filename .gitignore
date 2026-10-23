@@ -1,0 +1,7 @@
+# Private execution artifacts, not skill source.
+runs/
+work/
+config/accounts.local.json
+__pycache__/
+*.pyc
+.pytest_cache/

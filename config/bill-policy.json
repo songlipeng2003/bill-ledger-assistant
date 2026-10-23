@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "timezone": "Asia/Hong_Kong",
+  "date_windows": {"hsbc": 2},
+  "date_window_basis": "transaction_date",
+  "policy_notes": {"hsbc_window": "本项目用户在2026-10-22确认前后两个自然日；不推广到其他银行或其他项目。"},
+  "account_mappings": [],
+  "refund_category": ["其他收入", "退款"],
+  "default_mode": "read_only",
+  "cleanup_action": "move_to_trash_only"
+}
