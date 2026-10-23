@@ -1,0 +1,85 @@
+docs/skills-design.md
+  s_87e629df9ef325::t_f42c514db8ee36 3,194,268
+.agents/skills/bank-bill-workflow/SKILL.md
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-2,4-5,7
+  s_87e629df9ef325::t_73ca3cc31dac84 3,6,8-33
+.agents/skills/sui-ledger-entry/SKILL.md
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-2,4-5,7
+  s_87e629df9ef325::t_73ca3cc31dac84 3,6,8-18,20-37
+  s_87e629df9ef325::t_aed6cad5265534 19
+docs/skills-usage.md
+  s_87e629df9ef325::t_f42c514db8ee36 1-82
+.agents/skills/verified-bank-mail-cleanup/agents/openai.yaml
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-4
+tests/test_bill_skills.py
+  s_87e629df9ef325::t_300105fd0a50c0 1-388,409-437
+  s_87e629df9ef325::t_74524cb9e61e84 389-408
+.agents/skills/bank-mail-extract/agents/openai.yaml
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-4
+.agents/skills/sui-ledger-entry/references/sui-workflow.md
+  s_87e629df9ef325::t_73ca3cc31dac84 1-23
+.agents/skills/bank-mail-extract/references/bank-formats.md
+  s_87e629df9ef325::t_73ca3cc31dac84 1-30
+.agents/skills/bank-mail-extract/references/transaction-format.md
+  s_87e629df9ef325::t_73ca3cc31dac84 1-19
+.agents/skills/bank-ledger-reconcile/scripts/reconcile.py
+  s_87e629df9ef325::t_20116d1803f168 6,54-60,109,142,283
+  s_87e629df9ef325::t_aed6cad5265534 119,141,153,214,293-294
+  s_87e629df9ef325::t_74524cb9e61e84 118
+  s_87e629df9ef325::t_a070dd7cda0135 1-5,7-53,61-108,110-117,120-140,143-152,154-213,215-282,284-292,295-363
+docs/skills-validation.json
+  s_87e629df9ef325::t_f42c514db8ee36 1-41
+.agents/skills/bank-mail-extract/SKILL.md
+  s_87e629df9ef325::t_73ca3cc31dac84 3,6,8-32
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-2,4-5,7
+.agents/skills/bank-ledger-reconcile/references/browser-readback.md
+  s_87e629df9ef325::t_73ca3cc31dac84 1-9
+.gitignore
+  s_87e629df9ef325::t_73ca3cc31dac84 1-7
+.agents/skills/verified-bank-mail-cleanup/SKILL.md
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-2,4-5,7
+  s_87e629df9ef325::t_73ca3cc31dac84 3,6,8-29
+.agents/skills/bank-bill-workflow/references/project-policy.md
+  s_87e629df9ef325::t_73ca3cc31dac84 1-10
+.agents/skills/sui-ledger-entry/agents/openai.yaml
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-4
+config/bill-policy.json
+  s_87e629df9ef325::t_73ca3cc31dac84 1-11
+.agents/skills/sui-ledger-entry/scripts/entry_journal.py
+  s_87e629df9ef325::t_c73a4558b9fee8 1-13,15-34,43-48,50-161
+  s_87e629df9ef325::t_20116d1803f168 49
+  s_87e629df9ef325::t_74524cb9e61e84 14,35-42
+.agents/skills/bank-ledger-reconcile/agents/openai.yaml
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-4
+.agents/skills/verified-bank-mail-cleanup/scripts/prepare_cleanup.py
+  s_87e629df9ef325::t_c73a4558b9fee8 1-124
+.agents/skills/bank-bill-workflow/agents/openai.yaml
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-4
+.agents/skills/bank-ledger-reconcile/references/input-contract.md
+  s_87e629df9ef325::t_aed6cad5265534 1-42,44-71
+  s_87e629df9ef325::t_74524cb9e61e84 43
+.agents/skills/verified-bank-mail-cleanup/references/cleanup-contract.md
+  s_87e629df9ef325::t_aed6cad5265534 1-42
+.agents/skills/bank-ledger-reconcile/SKILL.md
+  s_87e629df9ef325::t_9bc3924f3c95cd 1-2,4-5,7
+  s_87e629df9ef325::t_73ca3cc31dac84 3,6,8-35
+.agents/skills/sui-ledger-entry/references/journal-contract.md
+  s_87e629df9ef325::t_74524cb9e61e84 22
+  s_87e629df9ef325::t_aed6cad5265534 1-21,23-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "06c8c322885fd1a27d285e9968a38e7cbfe4cd2b",
+  "prompts": {},
+  "sessions": {
+    "s_87e629df9ef325": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a163ad-a7c4-7b81-ab79-04caa7c41d79",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Peter Song <123wuming_123@163.com>"
+    }
+  }
+}
