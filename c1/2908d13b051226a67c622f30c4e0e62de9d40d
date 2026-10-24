@@ -1,0 +1,19 @@
+AGENTS.md
+  s_87e629df9ef325::t_4c45171b2db025 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c12908d13b051226a67c622f30c4e0e62de9d40d",
+  "prompts": {},
+  "sessions": {
+    "s_87e629df9ef325": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a163ad-a7c4-7b81-ab79-04caa7c41d79",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Peter Song <123wuming_123@163.com>"
+    }
+  }
+}
