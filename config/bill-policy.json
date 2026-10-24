@@ -1,11 +1,65 @@
 {
   "schema_version": 1,
   "timezone": "Asia/Hong_Kong",
-  "date_windows": {"hsbc": 2},
+  "date_windows": {
+    "hsbc": 2
+  },
   "date_window_basis": "transaction_date",
-  "policy_notes": {"hsbc_window": "本项目用户在2026-10-22确认前后两个自然日；不推广到其他银行或其他项目。"},
+  "policy_notes": {
+    "hsbc_window": "本项目用户在2026-10-22确认前后两个自然日；不推广到其他银行或其他项目。",
+    "expense_classification": "2026-10-24用户确认：根据备注优先识别商家及用途；拼多多放日用品（账本分类日常用品），中国移动/中移动放手机费，仍无法确定分类的支出统一放饮食其他。仅记录规则不授权回改旧账或删除。",
+    "ledger_memo": "2026-10-24用户确认：记账备注只使用账单或交易记录原有备注，尽量不增加其他内容；不追加补录标识、来源行号、入账日或时间占位说明。核验、防重及来源信息保存在本地日志。此规则不自动授权清理旧备注。"
+  },
   "account_mappings": [],
-  "refund_category": ["其他收入", "退款"],
+  "refund_category": [
+    "其他收入",
+    "退款"
+  ],
   "default_mode": "read_only",
-  "cleanup_action": "move_to_trash_only"
+  "cleanup_action": "move_to_trash_only",
+  "expense_classification": {
+    "source_order": [
+      "memo",
+      "merchant"
+    ],
+    "priority": [
+      "confirmed_merchant_rules",
+      "clear_merchant_or_purpose",
+      "fallback"
+    ],
+    "merchant_rules": [
+      {
+        "id": "pinduoduo",
+        "match_any": [
+          "拼多多"
+        ],
+        "category": "日常用品",
+        "user_category_alias": "日用品"
+      },
+      {
+        "id": "china_mobile",
+        "match_any": [
+          "中国移动",
+          "中移动"
+        ],
+        "category": "手机费"
+      }
+    ],
+    "fallback_category": "饮食其他",
+    "applies_to": [
+      "expense"
+    ],
+    "preserve_refund_and_transfer_types": true,
+    "reclassify_existing_requires_request": true,
+    "confirmed_on": "2026-10-24"
+  },
+  "ledger_memo": {
+    "mode": "source_only",
+    "prefer_verbatim": true,
+    "empty_when_source_has_no_memo": true,
+    "append_generated_content": false,
+    "audit_metadata_location": "local_journal_only",
+    "edit_existing_requires_request": true,
+    "confirmed_on": "2026-10-24"
+  }
 }

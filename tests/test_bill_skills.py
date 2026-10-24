@@ -380,7 +380,7 @@ class JournalTests(unittest.TestCase):
         J.transition(journal, second['key'], 'submitted'); J.transition(journal, second['key'], 'verify', observation(second))
         self.assertEqual(journal['entries'][second['key']]['state'], 'uncertain')
 
-    def test_float_amount_and_unlabeled_key_rejected(self):
+    def test_invalid_amount_rejected(self):
         for value in [10.0, '-10.00', '0.00']:
             p = plan(); p['entries'][0]['amount'] = value
             with self.subTest(value=value), self.assertRaises(ValueError):
@@ -416,6 +416,89 @@ class JournalTests(unittest.TestCase):
             retry = subprocess.run(args, capture_output=True)
             self.assertNotEqual(retry.returncode, 0)
             self.assertEqual(j.read_bytes(), before)
+
+
+class SourceOnlyMemoJournalTests(unittest.TestCase):
+    def source_plan(self, memo='Synthetic Shop退款'):
+        p = plan()
+        p['entries'][0].update(memo=memo, before_snapshot={
+            'complete': True, 'captured_at': STAMP, 'ledger_ids': ['existing-ledger-a']})
+        return p
+
+    def submitted(self, p):
+        j = J.initialize(p)
+        J.transition(j, p['entries'][0]['key'], 'submitted')
+        return j
+
+    def test_source_memo_without_embedded_key_verifies_by_new_id(self):
+        p = self.source_plan(); e = p['entries'][0]; j = self.submitted(p)
+        obs = observation(e); obs['records'][0].pop('key')
+        J.transition(j, e['key'], 'verify', obs)
+        self.assertEqual(j['entries'][e['key']]['state'], 'verified')
+        self.assertEqual(j['entries'][e['key']]['entry']['memo'], 'Synthetic Shop退款')
+
+    def test_empty_source_memo_is_preserved(self):
+        p = self.source_plan(''); e = p['entries'][0]; j = self.submitted(p)
+        J.transition(j, e['key'], 'verify', observation(e))
+        self.assertEqual(j['entries'][e['key']]['state'], 'verified')
+        self.assertEqual(j['entries'][e['key']]['entry']['memo'], '')
+
+    def test_source_only_memo_requires_complete_before_snapshot(self):
+        for snapshot in [None, {'complete': False, 'captured_at': STAMP, 'ledger_ids': []}]:
+            p = self.source_plan(); p['entries'][0]['before_snapshot'] = snapshot
+            with self.subTest(snapshot=snapshot), self.assertRaises(ValueError):
+                J.initialize(p)
+
+    def test_duplicate_or_invalid_before_ids_rejected(self):
+        for ids in [['existing-a', 'existing-a'], [''], [None], 'not-a-list']:
+            p = self.source_plan(); p['entries'][0]['before_snapshot']['ledger_ids'] = ids
+            with self.subTest(ids=ids), self.assertRaises(ValueError):
+                J.initialize(p)
+
+    def test_stale_before_snapshot_rejected_before_saving(self):
+        p = self.source_plan(); e = p['entries'][0]; j = J.initialize(p)
+        e['before_snapshot']['captured_at'] = (NOW - timedelta(minutes=31)).isoformat()
+        with self.assertRaises(ValueError):
+            J.transition(j, e['key'], 'submitted')
+        self.assertEqual(j['entries'][e['key']]['state'], 'planned')
+
+    def test_existing_record_cannot_be_relabelled_as_new(self):
+        p = self.source_plan(); e = p['entries'][0]; j = self.submitted(p)
+        obs = observation(e); obs['records'][0]['id'] = 'existing-ledger-a'
+        J.transition(j, e['key'], 'verify', obs)
+        self.assertEqual(j['entries'][e['key']]['state'], 'uncertain')
+
+    def test_multiple_new_identical_records_remain_ambiguous(self):
+        p = self.source_plan(); e = p['entries'][0]; j = self.submitted(p)
+        obs = observation(e); other = deepcopy(obs['records'][0])
+        other.update(id='second-new-record'); other.pop('key')
+        obs['records'].append(other)
+        J.transition(j, e['key'], 'verify', obs)
+        self.assertEqual(j['entries'][e['key']]['state'], 'uncertain')
+
+    def test_appended_generated_memo_does_not_verify(self):
+        p = self.source_plan(); e = p['entries'][0]; j = self.submitted(p)
+        obs = observation(e); obs['records'][0]['memo'] += '; ' + e['key']
+        J.transition(j, e['key'], 'verify', obs)
+        self.assertEqual(j['entries'][e['key']]['state'], 'uncertain')
+
+    def test_readback_before_baseline_is_rejected(self):
+        p = self.source_plan(); e = p['entries'][0]; j = self.submitted(p)
+        with self.assertRaises(ValueError):
+            J.transition(j, e['key'], 'verify', observation(e, captured_at=(NOW - timedelta(seconds=1)).isoformat()))
+
+    def test_source_only_record_id_cannot_verify_two_events(self):
+        p = self.source_plan(); first = p['entries'][0]; second = deepcopy(first)
+        second.update(key='BILL-REF-B', event_id='event-b'); p['entries'].append(second)
+        j = self.submitted(p); J.transition(j, first['key'], 'verify', observation(first))
+        J.transition(j, second['key'], 'submitted')
+        J.transition(j, second['key'], 'verify', observation(second))
+        self.assertEqual(j['entries'][second['key']]['state'], 'uncertain')
+
+    def test_complete_empty_baseline_can_verify_first_record(self):
+        p = self.source_plan(); e = p['entries'][0]; e['before_snapshot']['ledger_ids'] = []
+        j = self.submitted(p); J.transition(j, e['key'], 'verify', observation(e))
+        self.assertEqual(j['entries'][e['key']]['state'], 'verified')
 
 
 class IntegrationTests(unittest.TestCase):

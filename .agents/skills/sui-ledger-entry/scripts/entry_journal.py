@@ -23,6 +23,25 @@ def digest(data):
     return hashlib.sha256(json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
 
 
+def fresh_capture(value, label):
+    captured = datetime.fromisoformat(str(value).replace('Z', '+00:00'))
+    require(captured.tzinfo is not None, label + ' timestamp must include timezone')
+    age = (datetime.now(timezone.utc) - captured.astimezone(timezone.utc)).total_seconds()
+    require(-120 <= age <= 1800, label + ' is stale; recapture actual records')
+    return captured
+
+
+def before_snapshot(entry):
+    snapshot = entry.get('before_snapshot')
+    require(isinstance(snapshot, dict) and snapshot.get('complete') is True,
+            'source-only memo requires a complete before_snapshot')
+    ids = snapshot.get('ledger_ids')
+    require(isinstance(ids, list) and all(isinstance(i, str) and i for i in ids),
+            'before_snapshot ledger_ids must be actual nonempty record IDs')
+    require(len(ids) == len(set(ids)), 'duplicate before_snapshot ledger ID')
+    return set(ids), fresh_capture(snapshot.get('captured_at'), 'before_snapshot')
+
+
 def validate_entry(entry):
     require(isinstance(entry, dict) and isinstance(entry.get('key'), str) and entry['key'], 'entry key required')
     require(isinstance(entry.get('event_id'), str) and entry['event_id'], 'event_id required')
@@ -40,7 +59,9 @@ def validate_entry(entry):
         require(entry.get('time_is_placeholder') is not True, 'known time cannot be a placeholder')
     elif clock is not None:
         require(clock == '00:00' and entry.get('time_is_placeholder') is True, 'date-only UI time must be an explicitly labelled placeholder')
-    require(isinstance(entry.get('memo'), str) and entry['key'] in entry['memo'], 'memo must preserve stable key')
+    require(isinstance(entry.get('memo'), str), 'memo must be source text; empty string is allowed')
+    if entry['key'] not in entry['memo']:
+        before_snapshot(entry)
     if entry['type'] == 'transfer':
         require(all(isinstance(entry.get(k), str) and entry[k] for k in ['from_account', 'to_account']), 'both transfer accounts required')
         require(entry['from_account'] != entry['to_account'], 'identical transfer accounts')
@@ -69,6 +90,8 @@ def transition(journal, key, action, observation=None):
     event = {'at': datetime.now(timezone.utc).isoformat(), 'action': action, 'previous_state': previous}
     if action == 'submitted':
         require(previous == 'planned', 'write already attempted; inspect actual ledger before any retry')
+        if key not in record['entry']['memo']:
+            before_snapshot(record['entry'])
         record['state'] = 'submitted'
     elif action == 'uncertain':
         require(previous in {'planned', 'submitted', 'uncertain'}, 'verified entry cannot become uncertain through a retry')
@@ -77,13 +100,20 @@ def transition(journal, key, action, observation=None):
         require(previous in {'submitted', 'uncertain'}, 'verify requires a recorded attempt')
         require(isinstance(observation, dict) and observation.get('search_complete') is True,
                 'fresh complete search required; incomplete search cannot prove absence')
-        captured = datetime.fromisoformat(str(observation.get('captured_at', '')).replace('Z', '+00:00'))
-        require(captured.tzinfo is not None, 'observation timestamp must include timezone')
-        age = (datetime.now(timezone.utc) - captured.astimezone(timezone.utc)).total_seconds()
-        require(-120 <= age <= 1800, 'observation is stale; recapture actual records')
+        captured = fresh_capture(observation.get('captured_at'), 'observation')
         rows = observation.get('records')
         require(isinstance(rows, list), 'records list required')
-        hits = [r for r in rows if isinstance(r, dict) and r.get('key') == key]
+        expected = record['entry']
+        if key in expected['memo']:
+            # Compatibility with old journals; new writes keep keys local only.
+            hits = [r for r in rows if isinstance(r, dict) and r.get('key') == key]
+        else:
+            prior_ids, prior_captured = before_snapshot(expected)
+            require(captured >= prior_captured, 'readback predates before_snapshot')
+            # Do not trust a locally attached key as evidence of a new record.
+            hits = [r for r in rows if isinstance(r, dict)
+                    and isinstance(r.get('id'), str) and r['id'] and r['id'] not in prior_ids
+                    and all(expected.get(field) == r.get(field) for field in FIELDS)]
         record['state'] = 'uncertain'
         if len(hits) != 1:
             event['reason'] = 'duplicate_or_missing_actual_record'
