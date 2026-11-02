@@ -501,6 +501,55 @@ class SourceOnlyMemoJournalTests(unittest.TestCase):
         self.assertEqual(j['entries'][e['key']]['state'], 'verified')
 
 
+class PostEntryCleanupPreferenceTests(unittest.TestCase):
+    def setUp(self):
+        self.policy = json.loads((ROOT / 'config/bill-policy.json').read_text())
+
+    def configured_case(self, events=None, ledger=None):
+        data = case(events=events, ledger=ledger)
+        data['policy'] = deepcopy(self.policy)
+        return data
+
+    def test_preference_is_scoped_to_verified_entries_not_read_only_or_background(self):
+        pref = self.policy['post_entry_cleanup']
+        self.assertTrue(pref['enabled'])
+        self.assertEqual(pref['trigger'], 'authorized_entry_verified')
+        self.assertEqual(pref['scope'], 'fully_reconciled_corresponding_threads_only')
+        self.assertFalse(pref['ask_to_prepare'])
+        self.assertEqual(self.policy['default_mode'], 'read_only')
+        self.assertFalse(pref['background_monitoring'])
+
+    def test_preference_does_not_grant_execution_authorization(self):
+        pref = self.policy['post_entry_cleanup']
+        self.assertEqual(pref['confirmation_policy'], 'follow_active_tool_requirements')
+        self.assertEqual(pref['action'], 'move_to_trash_only')
+        self.assertFalse(pref['permanent_delete'])
+        self.assertFalse(pref['empty_trash'])
+        report = R.reconcile(self.configured_case())
+        manifest = C.prepare(report, fresh(report), now=NOW)
+        self.assertEqual(len(manifest['candidates']), 1)
+        self.assertFalse(manifest['execution_authorized'])
+        self.assertTrue(manifest['requires_action_time_confirmation'])
+
+    def test_preference_does_not_release_partially_reconciled_thread(self):
+        report = R.reconcile(self.configured_case(
+            events=[event('purchase-a'), event('refund-a', type='refund')], ledger=[row()]))
+        manifest = C.prepare(report, fresh(report), now=NOW)
+        self.assertFalse(manifest['candidates'])
+        self.assertIn('unresolved_events', manifest['skipped'][0]['reasons'])
+
+    def test_preference_does_not_expand_fixed_source_selection(self):
+        second = event('event-b', merchant='Other Shop', observations=[
+            {'source_id': 'source-b', 'message_id': 'message-b', 'item_ref': 'row-b'}])
+        report = R.reconcile(self.configured_case(
+            events=[event(), second], ledger=[row(), row('ledger-b', merchant='Other Shop')]))
+        current = fresh(report)
+        current['requested_source_ids'] = ['source-a']
+        manifest = C.prepare(report, current, now=NOW)
+        self.assertEqual([s['source_id'] for s in manifest['candidates']], ['source-a'])
+        self.assertFalse(manifest['execution_authorized'])
+
+
 class IntegrationTests(unittest.TestCase):
     def test_synthetic_cli_reconcile_then_prepare_cleanup(self):
         with tempfile.TemporaryDirectory() as temp:

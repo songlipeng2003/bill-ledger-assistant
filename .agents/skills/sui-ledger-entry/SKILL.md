@@ -35,3 +35,5 @@ python .agents/skills/sui-ledger-entry/scripts/entry_journal.py verify JOURNAL.j
 ## 交付
 
 实际新增条目和金额、已存在而跳过的条目、待确认项、实际账目ID及逐笔核验日志。范围内有任何未完成项，不能报告“全部补齐”，更不能自动清理所在邮件。
+
+本项目启用 `post_entry_cleanup` 时，把已验证结果交给同级 `bank-bill-workflow` 编排对应邮件清理；不重复询问是否准备清单，但本技能仍不直接删邮件，也不跳过工具要求的执行前确认。

@@ -8,7 +8,8 @@
   "policy_notes": {
     "hsbc_window": "本项目用户在2026-10-22确认前后两个自然日；不推广到其他银行或其他项目。",
     "expense_classification": "2026-10-24用户确认：根据备注优先识别商家及用途；拼多多放日用品（账本分类日常用品），中国移动/中移动放手机费，仍无法确定分类的支出统一放饮食其他。仅记录规则不授权回改旧账或删除。",
-    "ledger_memo": "2026-10-24用户确认：记账备注只使用账单或交易记录原有备注，尽量不增加其他内容；不追加补录标识、来源行号、入账日或时间占位说明。核验、防重及来源信息保存在本地日志。此规则不自动授权清理旧备注。"
+    "ledger_memo": "2026-10-24用户确认：记账备注只使用账单或交易记录原有备注，尽量不增加其他内容；不追加补录标识、来源行号、入账日或时间占位说明。核验、防重及来源信息保存在本地日志。此规则不自动授权清理旧备注。",
+    "post_entry_cleanup": "2026-11-02用户要求：完成对应记账并核验后默认清理原邮件，不再重复询问是否进入清理步骤。此偏好不豁免当前工具要求的实际删除执行前确认，只支持移入垃圾箱。"
   },
   "account_mappings": [],
   "refund_category": [
@@ -61,5 +62,17 @@
     "audit_metadata_location": "local_journal_only",
     "edit_existing_requires_request": true,
     "confirmed_on": "2026-10-24"
+  },
+  "post_entry_cleanup": {
+    "enabled": true,
+    "trigger": "authorized_entry_verified",
+    "scope": "fully_reconciled_corresponding_threads_only",
+    "action": "move_to_trash_only",
+    "ask_to_prepare": false,
+    "confirmation_policy": "follow_active_tool_requirements",
+    "permanent_delete": false,
+    "empty_trash": false,
+    "background_monitoring": false,
+    "confirmed_on": "2026-11-02"
   }
 }
