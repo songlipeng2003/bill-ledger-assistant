@@ -1,0 +1,33 @@
+docs/skills-usage.md
+  s_e8b2b4c38df5be::t_fdece457dbb977 68
+  s_e8b2b4c38df5be::t_a0fa6f778e579c 28-29,70
+.agents/skills/sui-ledger-entry/SKILL.md
+  s_e8b2b4c38df5be::t_a0fa6f778e579c 38-39
+tests/test_bill_skills.py
+  s_e8b2b4c38df5be::t_a0fa6f778e579c 504-552
+.agents/skills/bank-bill-workflow/SKILL.md
+  s_e8b2b4c38df5be::t_a0fa6f778e579c 22-30
+README.md
+  s_e8b2b4c38df5be::t_a0fa6f778e579c 7,33-35,40-44
+  s_e8b2b4c38df5be::t_4a90af0513fcfd 45
+config/bill-policy.json
+  s_e8b2b4c38df5be::t_a0fa6f778e579c 11-12,65-76
+.agents/skills/bank-bill-workflow/references/project-policy.md
+  s_e8b2b4c38df5be::t_a0fa6f778e579c 12-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b27f78ffa3892b58a9dafc6b534280785123dde1",
+  "prompts": {},
+  "sessions": {
+    "s_e8b2b4c38df5be": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1974b-c733-79c0-bd60-a60c20a86f11",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Peter Song <123wuming_123@163.com>"
+    }
+  }
+}
