@@ -1,0 +1,55 @@
+.agents/skills/bank-bill-workflow/references/project-policy.md
+  s_e8b2b4c38df5be::t_23d06460799a3e 11-12
+.agents/skills/sui-ledger-entry/references/journal-contract.md
+  s_e8b2b4c38df5be::t_25086fb5306038 22,59
+  s_e8b2b4c38df5be::t_23d06460799a3e 10,36-46
+  s_e8b2b4c38df5be::t_d611ed52666b72 47
+docs/skills-usage.md
+  s_e8b2b4c38df5be::t_63ed8d338bc2cb 78
+  s_e8b2b4c38df5be::t_23d06460799a3e 27,47-54
+  s_e8b2b4c38df5be::t_dde6e5476a34d0 55
+.agents/skills/sui-ledger-entry/agents/openai.yaml
+  s_e8b2b4c38df5be::t_23d06460799a3e 3
+.agents/skills/sui-ledger-entry/scripts/select_store.py
+  s_e8b2b4c38df5be::t_25086fb5306038 98-99
+  s_e8b2b4c38df5be::t_a272f248803b8d 1-97,100-141
+README.md
+  s_e8b2b4c38df5be::t_23d06460799a3e 129-136,169-176
+  s_e8b2b4c38df5be::t_a7091623f04f4f 177
+.agents/skills/sui-ledger-entry/SKILL.md
+  s_e8b2b4c38df5be::t_23d06460799a3e 3,14-15,20-21,23,39
+.agents/skills/sui-ledger-entry/references/store-selection.md
+  s_e8b2b4c38df5be::t_23d06460799a3e 1-58
+.agents/skills/sui-ledger-entry/references/sui-workflow.md
+  s_e8b2b4c38df5be::t_23d06460799a3e 17,28-30
+  s_e8b2b4c38df5be::t_b6ae12c25fa554 31
+tests/test_store_selection.py
+  s_e8b2b4c38df5be::t_b8c4115a3834ac 1-172,177-214,219-232,235-270
+  s_e8b2b4c38df5be::t_25086fb5306038 173-176,215-218,233-234
+config/bill-policy.json
+  s_e8b2b4c38df5be::t_a272f248803b8d 12-13,78-108
+.agents/skills/sui-ledger-entry/scripts/entry_journal.py
+  s_e8b2b4c38df5be::t_25086fb5306038 70
+  s_e8b2b4c38df5be::t_a272f248803b8d 15-20,69,71-77,131,137
+docs/skills-validation.json
+  s_e8b2b4c38df5be::t_63ed8d338bc2cb 2,12,39-46
+docs/skills-design.md
+  s_e8b2b4c38df5be::t_23d06460799a3e 268
+  s_e8b2b4c38df5be::t_52bc5426cbf3a0 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "61aefea7ec145271d97b2543fb85c71b06d8504f",
+  "prompts": {},
+  "sessions": {
+    "s_e8b2b4c38df5be": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1974b-c733-79c0-bd60-a60c20a86f11",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Peter Song <123wuming_123@163.com>"
+    }
+  }
+}
