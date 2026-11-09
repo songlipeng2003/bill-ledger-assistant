@@ -126,6 +126,14 @@ cd bill-ledger-assistant
 
 不再默认用“其他支出”兜底。以上是支出分类规则，不改变退款、还款或转账的方向，也不自动授权批量重分类已有账目。
 
+### 同时选择账本已有商家
+
+2026-11-09新增 `merchant_selection`：从原备注识别实际商家，再参考银行原始商户，匹配目标账本当前完整目录中的名称或已核实别名。明确唯一匹配时，在录入表单的“商家”字段选择该项；支付渠道不是商家。
+
+- 未建档、重名、别名冲突或来源矛盾时，明确重置为“无”，不沿用上一笔，不模糊猜测或自动新建。
+- 原备注保持不变；商家目录、真实ID和个人别名映射只留在忽略的本地目录。
+- 保存前后都核验商家名称/ID；不影响交易类型，不回改历史账目。
+
 ### 备注只保留来源原文
 
 - 只使用账单或交易记录原有的备注 / 摘要，尽量原样保留；来源没有备注或摘要时留空。
@@ -157,6 +165,15 @@ python .agents/skills/bank-ledger-reconcile/scripts/reconcile.py \
   --out runs/example/report.json \
   --markdown runs/example/report.md
 ```
+
+### 已有商家匹配（纯本地）
+
+```sh
+python .agents/skills/sui-ledger-entry/scripts/select_store.py INPUT.json \
+  --policy config/bill-policy.json --out RESULT.json
+```
+
+输入包含原备注、可选银行商户和当前账本的完整商家目录/真实捕获时间。脚本只生成选择建议，不操作网页或账本。合同及表单执行规则见[商家选择](.agents/skills/sui-ledger-entry/references/store-selection.md)。
 
 ### 补录日志
 

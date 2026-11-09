@@ -7,7 +7,7 @@
 - `memo`只放账单/交易记录原有备注或摘要，不添加稳定key、补录说明、入账日、来源行号或时间占位说明。来源没有备注时允许`""`。
 - 稳定`key`、`event_id`、`source_refs`、日期精度与实际账目ID只保存在本地，重跑沿用同一事件标识。
 - 新的无标识备注计划必须提供`before_snapshot`：相关账户、日期和方向范围已完整读取的实际账目ID清单及真实捕获时间。无记录时`ledger_ids`可为`[]`，不能把未读完误记为空。
-- 保存后在同一相关范围完整重读，不依赖平台备注包含key：只有一个新增实际ID且日期、账户、方向、币种、金额、分类、备注和已知时间均相符才核验通过。多个新增候选保持`uncertain`；不能用本地给候选加key的方式消除歧义。
+- 保存后在同一相关范围完整重读，不依赖平台备注包含key：只有一个新增实际ID且日期、账户、方向、币种、金额、分类、备注、已知时间及本轮计划的商家名称/ID均相符才核验通过。多个新增候选保持`uncertain`；不能用本地给候选加key的方式消除歧义。
 
 计划示例（仅示意结构，`captured_at`须替换为本轮真实读取的时间）：
 
@@ -19,7 +19,7 @@
       "key": "BILL-REF-EVENT-A", "event_id": "event-a", "type": "income",
       "date": "2030-04-10", "time_precision": "date", "currency": "CNY", "amount": "10.00",
       "account": "card-a", "category": "退款",
-      "memo": "Synthetic Shop退款",
+      "memo": "Synthetic Shop退款", "store": "无", "store_id": null,
       "source_refs": ["synthetic://thread-a#row-1"],
       "before_snapshot": {
         "complete": true,
@@ -33,6 +33,18 @@
 
 `expense`/`income`需要`account`及`category`；`transfer`需要明确且不同的`from_account`、`to_account`。金额为正的两位小数字符串。已知时分必须提供`time`（分钟精度HH:MM、秒精度HH:MM:SS），并在实际记录中重新核对该时间。日期精度可不提供时间；界面强制时间时使用`time: "00:00"`及`time_is_placeholder: true`，只在本地日志/交付说明中标注占位，不追加平台备注。银行多来源同一事件只计划一笔。
 
+## 商家字段与兼容性
+
+新录入按当前目录选择商家，并在计划和实际观察记录中加入：
+
+```json
+{"store": "合成百货", "store_id": "synthetic-store-a"}
+```
+
+`store_id`是商家目录的真实ID，不是账目ID。选“无”时使用 `{"store": "无", "store_id": null}`；实际页面的空/无商家ID仅在确认显示“无”后归一化为null。命中商家时要求非空名称及真实ID，保存后从实际账目重读，不把计划ID复制成观察值。商家不符/缺失/残留旧ID都不能通过，即使其余字段完全一致。
+
+不含商家字段的旧日志仍按原合同验证，不重写历史计划。识别、目录格式和唯一匹配规则见[商家选择](store-selection.md)。
+
 验证输入`OBSERVED.json`示例（实际读取全部相关记录，不只挑选有利的那条）：
 
 ```json
@@ -44,7 +56,7 @@
       "id": "new-actual-ledger-a", "type": "income",
       "date": "2030-04-10", "time_precision": "date", "currency": "CNY", "amount": "10.00",
       "account": "card-a", "category": "退款",
-      "memo": "Synthetic Shop退款"
+      "memo": "Synthetic Shop退款", "store": "无", "store_id": null
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-23",
+  "date": "2026-11-09",
   "skills": [
     "bank-mail-extract",
     "bank-ledger-reconcile",
@@ -9,7 +9,7 @@
   ],
   "placement": "project/.agents/skills",
   "structure_validation_passed": 5,
-  "synthetic_tests_passed": 65,
+  "synthetic_tests_passed": 122,
   "live_browser_tested": false,
   "live_financial_writes": false,
   "live_email_deletions": false,
@@ -36,6 +36,12 @@
     ".agents/skills/verified-bank-mail-cleanup/scripts/prepare_cleanup.py",
     ".agents/skills/bank-bill-workflow/SKILL.md",
     ".agents/skills/bank-bill-workflow/references/project-policy.md",
-    ".agents/skills/bank-bill-workflow/agents/openai.yaml"
-  ]
+    ".agents/skills/bank-bill-workflow/agents/openai.yaml",
+    ".agents/skills/sui-ledger-entry/scripts/select_store.py",
+    ".agents/skills/sui-ledger-entry/references/store-selection.md"
+  ],
+  "validation_scope": "本轮已有商家自动选择和日志读回变更；结构校验5个技能，测试仅使用合成数据，不涉及真实写入或删除。",
+  "merchant_selection_verified_synthetically": true,
+  "saved_store_readback_verified_synthetically": true,
+  "legacy_journal_compatibility_tested": true
 }

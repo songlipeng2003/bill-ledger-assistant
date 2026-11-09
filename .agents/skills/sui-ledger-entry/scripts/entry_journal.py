@@ -12,6 +12,12 @@ import re
 import tempfile
 
 FIELDS = ('type', 'date', 'time', 'time_precision', 'time_is_placeholder', 'currency', 'amount', 'account', 'from_account', 'to_account', 'category', 'memo')
+OPTIONAL_FIELDS = ('store', 'store_id')
+
+
+def verification_fields(entry):
+    # Legacy journals without store fields keep their original readback contract.
+    return FIELDS + tuple(field for field in OPTIONAL_FIELDS if field in entry)
 
 
 def require(value, message):
@@ -60,6 +66,15 @@ def validate_entry(entry):
     elif clock is not None:
         require(clock == '00:00' and entry.get('time_is_placeholder') is True, 'date-only UI time must be an explicitly labelled placeholder')
     require(isinstance(entry.get('memo'), str), 'memo must be source text; empty string is allowed')
+    if 'store' in entry:
+        require('store_id' in entry, 'store requires actual store_id or explicit null for none')
+        require(isinstance(entry['store'], str) and entry['store'].strip(), 'store name required when supplied')
+        if entry['store'] == '无':
+            require(entry.get('store_id') is None, 'none store cannot carry a store ID')
+        else:
+            require(isinstance(entry.get('store_id'), str) and entry['store_id'].strip(), 'selected store requires actual store_id')
+    else:
+        require('store_id' not in entry, 'store_id requires store name')
     if entry['key'] not in entry['memo']:
         before_snapshot(entry)
     if entry['type'] == 'transfer':
@@ -113,13 +128,13 @@ def transition(journal, key, action, observation=None):
             # Do not trust a locally attached key as evidence of a new record.
             hits = [r for r in rows if isinstance(r, dict)
                     and isinstance(r.get('id'), str) and r['id'] and r['id'] not in prior_ids
-                    and all(expected.get(field) == r.get(field) for field in FIELDS)]
+                    and all(expected.get(field) == r.get(field) for field in verification_fields(expected))]
         record['state'] = 'uncertain'
         if len(hits) != 1:
             event['reason'] = 'duplicate_or_missing_actual_record'
         else:
             actual, expected = hits[0], record['entry']
-            differences = [field for field in FIELDS if expected.get(field) != actual.get(field)]
+            differences = [field for field in verification_fields(expected) if expected.get(field) != actual.get(field)]
             used_ids = {r.get('actual_ledger_id') for k, r in journal['entries'].items() if k != key and r['state'] == 'verified'}
             if differences or not isinstance(actual.get('id'), str) or not actual['id'] or actual['id'] in used_ids:
                 event['reason'] = 'field_mismatch_or_reused_ledger_id'
